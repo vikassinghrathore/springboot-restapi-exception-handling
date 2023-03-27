@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("api/users")
+@RequestMapping("/api/users")
 public class UserController {
     @Autowired
     private UserRepository userRepository;
@@ -24,7 +24,7 @@ public class UserController {
     }
 
     // get user by id
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public User getUserById(@PathVariable(value = "id") long userId) {
         return this.userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id:" + userId));
@@ -37,7 +37,7 @@ public class UserController {
     }
 
     // update user
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     public User updateUser(@RequestBody User user, @PathVariable("id") long userId) {
         User existingUser = this.userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id:" + userId));
@@ -48,10 +48,11 @@ public class UserController {
     }
 
     // delete user by id
-    @DeleteMapping("{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable("id") long userId) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<User> deleteUser(@PathVariable("id") long userId) {
         User existingUser = this.userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id:" + userId));
+        this.userRepository.delete(existingUser);
         return ResponseEntity.ok().build();
     }
 }
